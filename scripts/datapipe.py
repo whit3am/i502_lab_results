@@ -75,9 +75,11 @@ class DataPipe:
         :return: spark.sql.SparkSession
         """
         spark = (ps.sql.SparkSession.builder
-                 .master('local[4]')
+                 .master('local[8]')
                  .appName('sparkSQL')
                  .getOrCreate())
+        spark.conf.set("spark.debug.maxToStringFields", "9999")
+        spark.conf.set("spark.debug.maxPlanStringLength", "9999")
         return spark
 
     def build_spark_context(self) -> ps.sql.SparkSession.sparkContext:
@@ -87,6 +89,7 @@ class DataPipe:
         """
         spark = self.spark
         sc = spark.sparkContext
+        sc.setLogLevel("INFO")
         return sc
 
     def read_data(self, data_path):
@@ -159,7 +162,8 @@ class DataPipe:
         """
         if year is month is None:
             path = f'{filename}.csv'
-        path = f'{filename}_year_{year}month_{month}.csv'
+        else:
+            path = f'{filename}_year_{year}_month_{month}.csv'
         result.coalesce(1).write.csv(path, header='true')
 
 
