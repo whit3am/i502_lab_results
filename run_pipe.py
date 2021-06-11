@@ -72,10 +72,10 @@ def main():
         , 'inventory': SqlQuery(inventory_q, 2020, 1)
         , 'lab': SqlQuery(lab_q, 2020, 1)}
 
-    finished = ['batches', 'licensees']
+    ignore = ['batches', 'licensees', 'inventory', 'lab']
 
     for key, value in paths.items():
-        if key in finished:
+        if key in ignore:
             continue
         path = value
         query = queries[key]
